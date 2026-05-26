@@ -1,0 +1,179 @@
+# Experiment configurations for optional ablations.
+# The default baseline configs stay simple on purpose.
+# After you implement an optional feature, you can use these named experiments
+# to activate it without editing a full config by hand.
+
+# Base configuration (same for all experiments)
+base:
+  model:
+    d_model: 256
+    num_layers: 4
+    num_heads: 4
+    d_ff: 1024
+    max_seq_len: 256
+    dropout: 0.1
+
+  data:
+    data_path: "data/raw/tinystories_train_50k.jsonl"
+    tokenizer_path: "references/tokenizers/english_bytebpe_8k.json"
+    split_ratio: [0.9, 0.05, 0.05]
+
+  training:
+    batch_size: 32
+    learning_rate: 3.0e-4
+    weight_decay: 0.01
+    num_epochs: 5
+    max_grad_norm: 1.0
+    gradient_accumulation_steps: 1
+    scheduler_type: "warmup_cosine"
+    warmup_steps: 500
+    use_amp: false
+    log_interval: 10
+    num_workers: 2
+
+# Experiment 1: LayerNorm vs RMSNorm
+experiments:
+  layernorm:
+    name: "LayerNorm"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_layernorm"
+
+  rmsnorm:
+    name: "RMSNorm"
+    model:
+      norm_type: "rmsnorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_rmsnorm"
+
+  # Experiment 2: Sinusoidal vs RoPE
+  sinusoidal:
+    name: "Sinusoidal Positional Encoding"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_sinusoidal"
+
+  rope:
+    name: "Rotary Position Embedding (RoPE)"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "rope"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_rope"
+
+  # Experiment 3: MHA vs GQA
+  mha:
+    name: "Multi-Head Attention"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      num_kv_heads: null
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_mha"
+
+  gqa:
+    name: "Grouped Query Attention"
+    model:
+      norm_type: "layernorm"
+      attention_type: "gqa"
+      num_kv_heads: 2  # num_heads // 2
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_gqa"
+
+  # Experiment 4: Standard FFN vs GLU
+  standard_ffn:
+    name: "Standard Feed-Forward"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_standard_ffn"
+
+  swiglu_ffn:
+    name: "SwiGLU Feed-Forward"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "swiglu"
+      activation: "silu"
+    training:
+      checkpoint_dir: "models/exp_swiglu_ffn"
+
+  # Experiment 5: Pre-norm vs Post-norm
+  pre_norm:
+    name: "Pre-Normalization"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "pre"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_pre_norm"
+
+  post_norm:
+    name: "Post-Normalization"
+    model:
+      norm_type: "layernorm"
+      attention_type: "mha"
+      pos_encoding_type: "sinusoidal"
+      norm_position: "post"
+      ffn_type: "standard"
+      activation: "gelu"
+    training:
+      checkpoint_dir: "models/exp_post_norm"
+
+  # Experiment 6: Modern Architecture (LLaMA-style)
+  modern:
+    name: "Modern Architecture (LLaMA-style)"
+    model:
+      norm_type: "rmsnorm"
+      attention_type: "gqa"
+      num_kv_heads: 2
+      pos_encoding_type: "rope"
+      norm_position: "pre"
+      ffn_type: "swiglu"
+      activation: "silu"
+    training:
+      checkpoint_dir: "models/exp_modern"
+
+# Instructions for running experiments:
+# 1. Train each experiment with: python scripts/train_model.py --config configs/optional/experiment_configs.yaml --experiment <experiment_name>
+# 2. Compare results in your report with explicit tables/figures
+# 3. Generate comparison plots and tables for your report

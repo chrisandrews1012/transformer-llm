@@ -1,0 +1,45 @@
+# Optional SFT reference config.
+# This file is included as a reference for optional SFT experimentation.
+# A full end-to-end SFT trainer is not implemented; this config is provided as a reference only.
+
+base_checkpoint: "models/tinyshakespeare_char/best_model.pt"
+
+model:
+  d_model: 256
+  num_layers: 4
+  num_heads: 4
+  d_ff: 1024
+  max_seq_len: 256
+  dropout: 0.1
+  attention_type: "mha"
+  num_kv_heads: null
+  pos_encoding_type: "sinusoidal"
+  norm_type: "layernorm"
+  norm_position: "pre"
+  ffn_type: "standard"
+  activation: "gelu"
+
+data:
+  data_path: "data/raw/tinyshakespeare_sft/sample_dialogue_sft.jsonl"
+  tokenizer_path: "data/raw/tinyshakespeare_char/tokenizer.json"
+  split_ratio: [0.9, 0.1, 0.0]
+  split_seed: 42
+
+training:
+  batch_size: 8
+  learning_rate: 1.0e-4
+  weight_decay: 0.0
+  num_epochs: 10
+  seed: 42
+  label_ignore_index: -100
+
+  max_grad_norm: 1.0
+  gradient_accumulation_steps: 1
+
+  scheduler_type: "warmup_cosine"
+  warmup_steps: 5
+
+  use_amp: false
+  log_interval: 10
+  checkpoint_dir: "models/tinyshakespeare_char_sft"
+  num_workers: 0

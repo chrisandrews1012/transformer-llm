@@ -1,0 +1,43 @@
+# Tiny Shakespeare preset with character tokenizer.
+
+model:
+  d_model: 256
+  num_layers: 4
+  num_heads: 4
+  d_ff: 1024
+  max_seq_len: 256
+  dropout: 0.1
+
+  attention_type: "mha"
+  num_kv_heads: null
+  pos_encoding_type: "sinusoidal"
+  norm_type: "layernorm"
+  norm_position: "pre"
+  ffn_type: "standard"
+  activation: "gelu"
+
+data:
+  data_path: "data/raw/tinyshakespeare/tinyshakespeare.jsonl"
+  tokenizer_path: "data/raw/tinyshakespeare_char/tokenizer.json"
+  split_ratio: [0.9, 0.05, 0.05]
+  split_seed: 42
+
+training:
+  batch_size: 16
+  learning_rate: 3.0e-4
+  weight_decay: 0.01
+  num_epochs: 16
+  seed: 42
+
+  max_grad_norm: 1.0
+  gradient_accumulation_steps: 1
+
+  scheduler_type: "warmup_cosine"
+  warmup_steps: 50
+
+  use_amp: false
+
+  log_interval: 10
+  checkpoint_dir: "models/tinyshakespeare_char"
+
+  num_workers: 0
