@@ -1,6 +1,6 @@
 # Transformer LLM from Scratch
 
-![Last Commit](https://img.shields.io/github/last-commit/chrisandrews1012/transformer-from-scratch)
+![Last Commit](https://img.shields.io/github/last-commit/chrisandrews1012/transformer-llm)
 ![Python](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?logo=pytorch&logoColor=white)
 ![Tests](https://img.shields.io/badge/tests-37%20passed-brightgreen)
