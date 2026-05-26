@@ -1,5 +1,10 @@
 # Transformer LLM from Scratch
 
+![Last Commit](https://img.shields.io/github/last-commit/chrisandrews1012/transformer-from-scratch)
+![Python](https://img.shields.io/badge/python-3.11+-3776AB?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?logo=pytorch&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-37%20passed-brightgreen)
+
 This project started as one of my Master's assignments and has since been refactored into a clean, standalone implementation. The goal was to build a decoder-only transformer language model entirely from scratch in PyTorch, with no Hugging Face model weights and no pre-built transformer blocks, and run controlled experiments on architecture choices.
 
 ---
